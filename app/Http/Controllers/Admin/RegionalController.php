@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Membro;
 use App\Models\Regional;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,17 +22,26 @@ class RegionalController extends Controller
 
     public function create(): View
     {
-        return view('admin.regionais.create');
+        $membros = Membro::query()->orderBy('nome')->get();
+
+        return view('admin.regionais.create', [
+            'membros' => $membros,
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'pastor_responsavel' => ['required', 'string', 'max:255'],
+            'pastor_membro_id' => ['required', 'exists:membros,id'],
         ]);
 
-        Regional::query()->create($validated);
+        $membro = Membro::query()->findOrFail($validated['pastor_membro_id']);
+
+        Regional::query()->create([
+            'nome' => $validated['nome'],
+            'pastor_responsavel' => $membro->nome,
+        ]);
 
         return redirect()
             ->route('admin.regionais.index')
@@ -40,8 +50,11 @@ class RegionalController extends Controller
 
     public function edit(Regional $regional): View
     {
+        $membros = Membro::query()->orderBy('nome')->get();
+
         return view('admin.regionais.edit', [
             'regional' => $regional,
+            'membros' => $membros,
         ]);
     }
 
@@ -49,10 +62,15 @@ class RegionalController extends Controller
     {
         $validated = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'pastor_responsavel' => ['required', 'string', 'max:255'],
+            'pastor_membro_id' => ['required', 'exists:membros,id'],
         ]);
 
-        $regional->update($validated);
+        $membro = Membro::query()->findOrFail($validated['pastor_membro_id']);
+
+        $regional->update([
+            'nome' => $validated['nome'],
+            'pastor_responsavel' => $membro->nome,
+        ]);
 
         return redirect()
             ->route('admin.regionais.index')

@@ -60,6 +60,39 @@
             Cadastre pelo menos uma <a href="{{ route('admin.regionais.create') }}">regional</a> antes de incluir igrejas.
         </div>
     @endif
+    <div class="row mb-3">
+        <div class="col-12">
+            <section class="card">
+                <div class="card-body">
+                    <form method="get" action="{{ route('admin.igrejas.index') }}" class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <label for="regional_id" class="form-label">Filtrar por Regional</label>
+                            <select name="regional_id" id="regional_id" class="form-control">
+                                <option value="">Todas</option>
+                                @foreach ($regionaisFiltro as $regional)
+                                    <option value="{{ $regional->id }}" @selected((string) $selectedRegionalId === (string) $regional->id)>
+                                        {{ $regional->nome }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="per_page" class="form-label">Por página</label>
+                            <select name="per_page" id="per_page" class="form-control">
+                                <option value="10" @selected((string) $selectedPerPage === '10')>10</option>
+                                <option value="25" @selected((string) $selectedPerPage === '25')>25</option>
+                                <option value="80" @selected((string) $selectedPerPage === '80')>80</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Aplicar filtro</button>
+                            <a href="{{ route('admin.igrejas.index') }}" class="btn btn-default">Limpar</a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </div>
     <div class="row">
         <div class="col-12">
             <section class="card">
@@ -125,15 +158,48 @@
             (function($) {
                 'use strict';
                 $(function() {
+                    var exportOpts = {
+                        columns: [0, 1, 2],
+                        format: {
+                            body: function(data) {
+                                if (typeof data === 'string') {
+                                    return $('<div>').html(data).text().replace(/\s+/g, ' ').trim();
+                                }
+                                return data != null ? String(data) : '';
+                            }
+                        }
+                    };
                     var table = $('#datatable-igrejas').DataTable({
-                        paging: false,
-                        lengthChange: false,
-                        info: false,
+                        paging: true,
+                        lengthChange: true,
+                        pageLength: {{ (int) $selectedPerPage }},
+                        lengthMenu: [[10, 25, 80], [10, 25, 80]],
+                        info: true,
                         ordering: true,
                         columnDefs: [{ orderable: false, targets: 3 }],
-                        language: { search: 'Buscar:', zeroRecords: 'Nenhum registro encontrado.', emptyTable: '—' },
-                        dom: '<"row"<"col-lg-12"f>><"table-responsive"t>',
-                        buttons: [{ extend: 'print', text: 'Imprimir' }, { extend: 'excel', text: 'Excel' }, { extend: 'pdf', text: 'PDF' }]
+                        language: {
+                            search: 'Buscar:',
+                            lengthMenu: 'Exibir _MENU_',
+                            info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                            infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+                            zeroRecords: 'Nenhum registro encontrado.',
+                            emptyTable: '—'
+                        },
+                        dom: '<"row"<"col-md-6"f><"col-md-6 text-end"B>><"table-responsive"t><"row mt-2"<"col-md-5"i><"col-md-7"p>>',
+                        buttons: [
+                            { extend: 'print', text: 'Imprimir', exportOptions: exportOpts },
+                            { extend: 'excel', text: 'Excel', exportOptions: exportOpts },
+                            {
+                                extend: 'pdf',
+                                text: 'PDF',
+                                exportOptions: exportOpts,
+                                customize: function(doc) {
+                                    if (doc.content[1] && doc.content[1].table) {
+                                        doc.content[1].table.widths = ['*', '*', '*'];
+                                    }
+                                }
+                            }
+                        ]
                     });
                     $('<div />').addClass('dt-buttons mb-2 pb-1 text-end').prependTo('#datatable-igrejas_wrapper');
                     table.buttons().container().prependTo('#datatable-igrejas_wrapper .dt-buttons');

@@ -29,15 +29,16 @@
                             @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="email">Email <span class="text-danger">*</span></label>
-                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $membro->email) }}" required maxlength="255">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $membro->email) }}" maxlength="255">
                             @error('email')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="senha">Senha <span class="text-danger">*</span></label>
-                            <input type="password" name="senha" id="senha" class="form-control" required minlength="6" maxlength="255">
+                            <label for="senha">Senha</label>
+                            <input type="password" name="senha" id="senha" class="form-control" minlength="6" maxlength="255">
+                            <small class="text-muted">Deixe em branco para manter a senha atual.</small>
                             @error('senha')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
@@ -56,8 +57,9 @@
                             @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="cargo_id">Cargo <span class="text-danger">*</span></label>
-                            <select name="cargo_id" id="cargo_id" class="form-control" required>
+                            <label for="cargo_id">Cargo</label>
+                            <select name="cargo_id" id="cargo_id" class="form-control">
+                                <option value="">Sem cargo</option>
                                 @foreach ($cargos as $cargo)
                                     <option value="{{ $cargo->id }}" @selected((string) old('cargo_id', $membro->cargo_id) === (string) $cargo->id)>
                                         {{ $cargo->nome }}
@@ -70,7 +72,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label for="telefone">Telefone</label>
-                            <input type="text" name="telefone" id="telefone" class="form-control" value="{{ old('telefone', $membro->telefone) }}" maxlength="40">
+                            <input type="text" name="telefone" id="telefone" class="form-control" value="{{ old('telefone', $membro->telefone) }}" maxlength="15" inputmode="numeric" placeholder="(99) 99999-9999">
                             @error('telefone')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
@@ -85,3 +87,27 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        (function() {
+            'use strict';
+            var input = document.getElementById('telefone');
+            if (!input) return;
+
+            var formatPhone = function(value) {
+                var digits = (value || '').replace(/\D/g, '').slice(0, 11);
+                if (!digits) return '';
+                if (digits.length <= 2) return '(' + digits;
+                if (digits.length <= 7) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
+                return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
+            };
+
+            input.addEventListener('input', function(e) {
+                e.target.value = formatPhone(e.target.value);
+            });
+
+            input.value = formatPhone(input.value);
+        })();
+    </script>
+@endpush

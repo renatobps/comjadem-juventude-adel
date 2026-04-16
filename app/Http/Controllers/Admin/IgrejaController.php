@@ -15,10 +15,16 @@ class IgrejaController extends Controller
     public function index(Request $request): View
     {
         $regionalScopeIds = $request->user()?->regionalScopeIds() ?? [];
+        $selectedRegionalId = $request->integer('regional_id');
+        $selectedPerPage = (int) $request->input('per_page', 10);
+        if (! in_array($selectedPerPage, [10, 25, 80], true)) {
+            $selectedPerPage = 10;
+        }
 
         $igrejas = Igreja::query()
             ->with(['regional', 'dirigenteMembro'])
             ->when(! empty($regionalScopeIds), fn ($q) => $q->whereIn('regional_id', $regionalScopeIds))
+            ->when($selectedRegionalId > 0, fn ($q) => $q->where('regional_id', $selectedRegionalId))
             ->orderBy('bairro')
             ->get();
 
@@ -28,10 +34,17 @@ class IgrejaController extends Controller
             ->orderBy('nome')
             ->get();
 
+        if ($selectedRegionalId > 0 && ! $regionais->contains('id', $selectedRegionalId)) {
+            abort(403, 'Você não pode filtrar igrejas de outra regional.');
+        }
+
         return view('admin.igrejas.index', [
             'igrejas' => $igrejas,
             'regionais' => $regionais,
             'regionaisCards' => $regionais->take(5)->values(),
+            'regionaisFiltro' => $regionais,
+            'selectedRegionalId' => $selectedRegionalId > 0 ? $selectedRegionalId : null,
+            'selectedPerPage' => $selectedPerPage,
         ]);
     }
 

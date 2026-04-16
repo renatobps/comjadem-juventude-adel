@@ -34,8 +34,8 @@ class MembroController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:membros,email'],
             'senha' => ['required', 'string', 'min:6', 'max:255'],
             'foto' => ['nullable', 'image', 'max:2048'],
-            'cargo_id' => ['required', 'exists:cargos,id'],
-            'telefone' => ['nullable', 'string', 'max:40'],
+            'cargo_id' => ['nullable', 'exists:cargos,id'],
+            'telefone' => ['required', 'string', 'max:40'],
         ]);
 
         if ($request->hasFile('foto')) {
@@ -60,12 +60,16 @@ class MembroController extends Controller
     {
         $validated = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:membros,email,' . $membro->id],
-            'senha' => ['required', 'string', 'min:6', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:membros,email,' . $membro->id],
+            'senha' => ['nullable', 'string', 'min:6', 'max:255'],
             'foto' => ['nullable', 'image', 'max:2048'],
-            'cargo_id' => ['required', 'exists:cargos,id'],
+            'cargo_id' => ['nullable', 'exists:cargos,id'],
             'telefone' => ['nullable', 'string', 'max:40'],
         ]);
+
+        if (! array_key_exists('senha', $validated) || $validated['senha'] === null) {
+            unset($validated['senha']);
+        }
 
         if ($request->hasFile('foto')) {
             if ($membro->foto) {
