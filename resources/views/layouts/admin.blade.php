@@ -69,10 +69,12 @@
                     <div id="userbox" class="userbox">
                         @php($membroUsuario = Auth::user()->membroPorEmail()->with('cargo')->first())
                         @php($cargoUsuario = $membroUsuario?->cargo?->nome)
-                        @php($fotoUsuario = $membroUsuario?->foto ? asset('storage/' . $membroUsuario->foto) : ($porto . '/img/!logged-user.jpg'))
+                        @php($fotoPadraoUsuario = $porto . '/img/!logged-user.jpg')
+                        @php($caminhoFotoUsuario = $membroUsuario?->foto)
+                        @php($fotoUsuario = $caminhoFotoUsuario && \Illuminate\Support\Facades\Storage::disk('public')->exists($caminhoFotoUsuario) ? asset('storage/' . $caminhoFotoUsuario) : $fotoPadraoUsuario)
                         <a href="#" data-bs-toggle="dropdown">
                             <figure class="profile-picture">
-                                <img src="{{ $fotoUsuario }}" alt="" class="rounded-circle" data-lock-picture="{{ $fotoUsuario }}" />
+                                <img src="{{ $fotoUsuario }}" alt="" class="rounded-circle" data-lock-picture="{{ $fotoUsuario }}" onerror="this.onerror=null;this.src='{{ $fotoPadraoUsuario }}';" />
                             </figure>
                             <div class="profile-info" data-lock-name="{{ Auth::user()->name }}" data-lock-email="{{ Auth::user()->email }}">
                                 <span class="name">{{ Auth::user()->name }}</span>
@@ -119,6 +121,20 @@
                                             <i class="bx bx-buildings" aria-hidden="true"></i>
                                             <span>Igrejas</span>
                                         </a>
+                                    </li>
+                                    <li class="nav-parent {{ request()->routeIs('admin.notificacoes.*') ? 'nav-expanded nav-active' : '' }}">
+                                        <a class="nav-link" href="#">
+                                            <i class="bx bx-bell" aria-hidden="true"></i>
+                                            <span>Notificações</span>
+                                        </a>
+                                        <ul class="nav nav-children">
+                                            <li class="{{ request()->routeIs('admin.notificacoes.*') ? 'nav-active' : '' }}">
+                                                <a class="nav-link" href="{{ route('admin.notificacoes.index') }}">Notificações</a>
+                                            </li>
+                                            <li class="{{ request()->routeIs('admin.notificacoes.configuracao-wpp') ? 'nav-active' : '' }}">
+                                                <a class="nav-link" href="{{ route('admin.notificacoes.configuracao-wpp') }}">Configuração WPP</a>
+                                            </li>
+                                        </ul>
                                     </li>
                                     @if (Auth::user()->isAdmin())
                                         <li class="{{ request()->routeIs('admin.regionais.*') ? 'nav-active' : '' }}">

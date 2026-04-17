@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'evolution_go' => [
+        'base_url' => env('EVOLUTION_GO_BASE_URL'),
+        'instance_name' => env('EVOLUTION_GO_INSTANCE_NAME'),
+        'instance_token' => env('EVOLUTION_GO_INSTANCE_TOKEN'),
+        'api_key' => env('EVOLUTION_GO_API_KEY'),
+        'text_endpoint' => env('EVOLUTION_GO_TEXT_ENDPOINT', '/send/text'),
+    ],
+
 ];

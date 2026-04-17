@@ -15,7 +15,6 @@
 @php($porto = asset('porto-admin'))
 @php($hasRows = $inscricoes->count() > 0)
 @php($statusOptions = \App\Models\PreInscricao::statusOptions())
-
 @push('head')
     <link rel="stylesheet" href="{{ $porto }}/vendor/datatables/media/css/dataTables.bootstrap5.css" />
     <style>
@@ -136,6 +135,40 @@
     </style>
 @endpush
 
+@push('scripts')
+    <script>
+        (function() {
+            'use strict';
+            var tipo = document.getElementById('destinatario_tipo');
+            var wrapperStatus = document.getElementById('wrapper_status_notificacao');
+            var wrapperIgreja = document.getElementById('wrapper_igreja_notificacao');
+            var wrapperRegional = document.getElementById('wrapper_regional_notificacao');
+            var inputStatus = document.getElementById('status_notificacao_id');
+            var inputIgreja = document.getElementById('igreja_notificacao_id');
+            var inputRegional = document.getElementById('regional_notificacao_id');
+            if (!tipo || !wrapperStatus || !wrapperIgreja || !wrapperRegional) return;
+
+            var update = function() {
+                var val = tipo.value;
+                var showStatus = val === 'status';
+                var showIgreja = val === 'igreja';
+                var showRegional = val === 'regional';
+
+                wrapperStatus.style.display = showStatus ? '' : 'none';
+                wrapperIgreja.style.display = showIgreja ? '' : 'none';
+                wrapperRegional.style.display = showRegional ? '' : 'none';
+
+                if (inputStatus) inputStatus.required = showStatus;
+                if (inputIgreja) inputIgreja.required = showIgreja;
+                if (inputRegional) inputRegional.required = showRegional;
+            };
+
+            tipo.addEventListener('change', update);
+            update();
+        })();
+    </script>
+@endpush
+
 @section('content')
     <div class="row mb-3">
         <div class="col-12">
@@ -198,6 +231,74 @@
                     @else
                         <div class="chart chart-md" id="flotPieRegionais"></div>
                     @endif
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <section class="card">
+                <header class="card-header">
+                    <h2 class="card-title">Enviar notificação para inscritos</h2>
+                </header>
+                <div class="card-body">
+                    <form method="post" action="{{ route('admin.inscricoes.notificacoes.enviar') }}" class="row g-2 align-items-end" id="formEnvioNotificacaoInscricoes">
+                        @csrf
+                        <div class="col-md-6">
+                            <label for="mensagem_notificacao" class="form-label">Mensagem</label>
+                            <textarea
+                                id="mensagem_notificacao"
+                                name="mensagem"
+                                class="form-control"
+                                rows="3"
+                                maxlength="4096"
+                                required
+                            >{{ old('mensagem') }}</textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="destinatario_tipo" class="form-label">Destinatário</label>
+                            <select name="destinatario_tipo" id="destinatario_tipo" class="form-control" required>
+                                <option value="status" @selected(old('destinatario_tipo', 'status') === 'status')>Por status da inscrição</option>
+                                <option value="igreja" @selected(old('destinatario_tipo') === 'igreja')>Por igreja</option>
+                                <option value="regional" @selected(old('destinatario_tipo') === 'regional')>Por regional</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="wrapper_status_notificacao">
+                            <label for="status_notificacao_id" class="form-label">Status da inscrição</label>
+                            <select name="status_destinatario" id="status_notificacao_id" class="form-control">
+                                @foreach ($statusOptions as $value => $label)
+                                    <option value="{{ $value }}" @selected((string) old('status_destinatario', \App\Models\PreInscricao::STATUS_AGUARDANDO) === (string) $value)>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="wrapper_igreja_notificacao">
+                            <label for="igreja_notificacao_id" class="form-label">Igreja</label>
+                            <select name="igreja_id" id="igreja_notificacao_id" class="form-control">
+                                <option value="">Selecione</option>
+                                @foreach ($igrejasFiltro as $igreja)
+                                    <option value="{{ $igreja->id }}" @selected((string) old('igreja_id') === (string) $igreja->id)>
+                                        {{ $igreja->nomeNoFormulario() }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="wrapper_regional_notificacao">
+                            <label for="regional_notificacao_id" class="form-label">Regional</label>
+                            <select name="regional_id" id="regional_notificacao_id" class="form-control">
+                                <option value="">Selecione</option>
+                                @foreach ($regionaisFiltro as $regional)
+                                    <option value="{{ $regional->id }}" @selected((string) old('regional_id') === (string) $regional->id)>
+                                        {{ $regional->nome }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Enviar</button>
+                        </div>
+                    </form>
                 </div>
             </section>
         </div>

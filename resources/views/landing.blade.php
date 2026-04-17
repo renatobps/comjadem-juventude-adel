@@ -49,7 +49,7 @@
             <span class="hero__rule" aria-hidden="true"></span>
             <p class="hero__date">Dia <strong>15</strong> de Agosto de 2026</p>
             <p class="hero__cta-line">
-              <a href="#inscricao" class="btn btn--hero-white">Inscrições indisponíveis</a>
+              <a href="#inscricao" class="btn btn--hero-white">Faça sua pré-inscrição</a>
             </p>
           </div>
         </div>
@@ -142,6 +142,17 @@
                 <div class="form-row form-row--2">
                   <label class="field"><span class="field__label">Idade</span><input type="number" name="idade" required min="10" max="120" /></label>
                   <label class="field"><span class="field__label">WhatsApp</span><input type="tel" name="whatsapp" required maxlength="15" inputmode="numeric" placeholder="(99) 99999-9999" pattern="\(\d{2}\)\s\d{5}-\d{4}" /></label>
+                </div>
+                <div class="form-row">
+                  <label class="field">
+                    <span class="field__label">Tamanho da camiseta</span>
+                    <select name="tamanho_camiseta" class="field__select" required>
+                      <option value="" disabled selected>Selecione o tamanho…</option>
+                      @foreach (\App\Models\PreInscricao::tamanhoCamisetaOptions() as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                      @endforeach
+                    </select>
+                  </label>
                 </div>
                 <div class="form-row">
                   <label class="field">

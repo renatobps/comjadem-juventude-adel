@@ -75,6 +75,7 @@
       nome: String(data.get("nome") || "").trim(),
       idade: Number(data.get("idade")),
       whatsapp: String(data.get("whatsapp") || "").trim(),
+      tamanho_camiseta: String(data.get("tamanho_camiseta") || "").trim(),
       igreja_id: igrejaIdRaw ? Number(igrejaIdRaw) : null,
       lider: String(data.get("lider") || ""),
     };

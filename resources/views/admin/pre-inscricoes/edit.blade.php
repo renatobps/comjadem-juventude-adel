@@ -47,6 +47,21 @@
                         </div>
 
                         <div class="form-group mb-3">
+                            <label for="tamanho_camiseta">Tamanho da camiseta <span class="text-danger">*</span></label>
+                            <select name="tamanho_camiseta" id="tamanho_camiseta" class="form-control" required>
+                                <option value="">Selecione...</option>
+                                @foreach (\App\Models\PreInscricao::tamanhoCamisetaOptions() as $value => $label)
+                                    <option value="{{ $value }}" @selected(old('tamanho_camiseta', $inscricao->tamanho_camiseta) === $value)>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('tamanho_camiseta')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
                             <label for="igreja_id">Igreja</label>
                             <select name="igreja_id" id="igreja_id" class="form-control">
                                 <option value="">Selecione...</option>
