@@ -194,6 +194,15 @@
       </section>
     </main>
 
+    <div class="success-modal" id="successModal" hidden aria-hidden="true">
+      <div class="success-modal__backdrop" data-close-modal="true"></div>
+      <section class="success-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+        <h3 id="successModalTitle">Inscrição concluída!</h3>
+        <p>Você vai receber no WhatsApp mais detalhes sobre os próximos passos.</p>
+        <button type="button" class="btn btn--primary btn--sm" id="successModalClose">Entendi</button>
+      </section>
+    </div>
+
     <footer class="site-footer">
       <div class="container footer-inner">
         <p class="footer-social">

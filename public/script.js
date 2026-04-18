@@ -3,6 +3,8 @@
   var yearEl = document.getElementById("year");
   var form = document.getElementById("preForm");
   var successEl = document.getElementById("formSuccess");
+  var successModal = document.getElementById("successModal");
+  var successModalClose = document.getElementById("successModalClose");
   var countdownRoot = document.getElementById("eventCountdown");
   var apiUrl = document.body && document.body.getAttribute("data-inscricao-api");
 
@@ -47,6 +49,49 @@
   if (!form || !successEl) return;
 
   var whatsappInput = form.querySelector('input[name="whatsapp"]');
+  var isSubmitting = false;
+  var hasSubmittedSuccessfully = false;
+  var reloadAfterSuccessModal = false;
+
+  function openSuccessModal(options) {
+    if (!successModal) return;
+    reloadAfterSuccessModal = !!(options && options.reloadAfterClose);
+    successModal.hidden = false;
+    successModal.setAttribute("aria-hidden", "false");
+    if (successModalClose) {
+      successModalClose.focus({ preventScroll: true });
+    }
+  }
+
+  function closeSuccessModal() {
+    if (!successModal) return;
+    successModal.hidden = true;
+    successModal.setAttribute("aria-hidden", "true");
+    if (reloadAfterSuccessModal) {
+      reloadAfterSuccessModal = false;
+      window.location.reload();
+    }
+  }
+
+  if (successModalClose) {
+    successModalClose.addEventListener("click", closeSuccessModal);
+  }
+
+  if (successModal) {
+    successModal.addEventListener("click", function (event) {
+      var target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (target.getAttribute("data-close-modal") === "true") {
+        closeSuccessModal();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !successModal.hidden) {
+        closeSuccessModal();
+      }
+    });
+  }
 
   function formatPhone(value) {
     var digits = String(value || "").replace(/\D/g, "").slice(0, 11);
@@ -64,11 +109,14 @@
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (isSubmitting || hasSubmittedSuccessfully) return;
+
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
 
+    isSubmitting = true;
     var data = new FormData(form);
     var igrejaIdRaw = data.get("igreja_id");
     var payload = {
@@ -82,6 +130,8 @@
 
     if (!apiUrl) {
       console.warn("Defina data-inscricao-api no <body> apontando para a API Laravel.");
+      hasSubmittedSuccessfully = true;
+      openSuccessModal({ reloadAfterClose: true });
       form.hidden = true;
       successEl.hidden = false;
       successEl.focus({ preventScroll: true });
@@ -89,7 +139,12 @@
     }
 
     var submitBtn = form.querySelector('[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
+    var originalSubmitLabel = "";
+    if (submitBtn) {
+      originalSubmitLabel = submitBtn.textContent || "";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enviando...";
+    }
 
     fetch(apiUrl, {
       method: "POST",
@@ -117,6 +172,8 @@
           window.alert(msg);
           return;
         }
+        hasSubmittedSuccessfully = true;
+        openSuccessModal({ reloadAfterClose: true });
         form.hidden = true;
         successEl.hidden = false;
         successEl.focus({ preventScroll: true });
@@ -125,7 +182,13 @@
         window.alert("Erro de rede. Verifique se a API está no ar e o endereço em data-inscricao-api.");
       })
       .finally(function () {
-        if (submitBtn) submitBtn.disabled = false;
+        if (!hasSubmittedSuccessfully) {
+          isSubmitting = false;
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalSubmitLabel;
+          }
+        }
       });
   });
 })();

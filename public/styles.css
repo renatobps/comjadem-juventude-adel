@@ -819,6 +819,46 @@ a.btn--hero-white:hover {
   color: var(--text-muted);
 }
 
+.success-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.success-modal[hidden] {
+  display: none;
+}
+
+.success-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 12, 0.74);
+  backdrop-filter: blur(2px);
+}
+
+.success-modal__dialog {
+  position: relative;
+  width: min(480px, 100%);
+  background: linear-gradient(180deg, #131826 0%, #0b101b 100%);
+  border: 1px solid rgba(46, 230, 214, 0.35);
+  border-radius: 16px;
+  padding: 1.35rem 1.2rem 1.1rem;
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+.success-modal__dialog h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1.35rem;
+}
+
+.success-modal__dialog p {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+}
+
 /* Final CTA */
 .section--final-cta {
   padding: clamp(4rem, 10vw, 6.5rem) 0;
