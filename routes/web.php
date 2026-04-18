@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\NotificacaoController;
 use App\Http\Controllers\Admin\PreInscricaoController as AdminPreInscricaoController;
 use App\Http\Controllers\Admin\PreInscricaoStatusController;
 use App\Http\Controllers\Admin\RegionalController;
+use App\Http\Controllers\MembroPublicoController;
 use App\Models\Igreja;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,9 @@ Route::get('/', function () {
         'igrejas' => Igreja::query()->with('regional')->orderBy('bairro')->get(),
     ]);
 });
+
+Route::get('/cadastro-membros', [MembroPublicoController::class, 'create'])->name('membros.publico.create');
+Route::post('/cadastro-membros', [MembroPublicoController::class, 'store'])->name('membros.publico.store');
 
 Route::prefix('admin')->name('admin.')->group(function (): void {
     Route::middleware('guest')->group(function (): void {
@@ -38,19 +42,20 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
             ->name('inscricoes.status');
         Route::post('inscricoes/notificacoes/enviar', [NotificacaoController::class, 'enviarParaInscricoes'])
             ->name('inscricoes.notificacoes.enviar');
-        Route::get('notificacoes', [NotificacaoController::class, 'index'])->name('notificacoes.index');
-        Route::post('notificacoes/mensagem-pos-inscricao', [NotificacaoController::class, 'salvarMensagemPosInscricao'])
-            ->name('notificacoes.mensagem-pos-inscricao');
-        Route::post('notificacoes/mensagem-confirmada', [NotificacaoController::class, 'salvarMensagemConfirmada'])
-            ->name('notificacoes.mensagem-confirmada');
-        Route::get('notificacoes/configuracao-wpp', [NotificacaoController::class, 'configuracaoWpp'])->name('notificacoes.configuracao-wpp');
-        Route::post('notificacoes/configuracao-wpp/teste-numero', [NotificacaoController::class, 'enviarTesteNumeroWpp'])
-            ->name('notificacoes.configuracao-wpp.teste-numero');
-        Route::post('notificacoes/configuracao-wpp/teste-departamento', [NotificacaoController::class, 'enviarTesteDepartamentoWpp'])
-            ->name('notificacoes.configuracao-wpp.teste-departamento');
-        Route::post('notificacoes/enviar-texto', [NotificacaoController::class, 'enviarTexto'])->name('notificacoes.enviar-texto');
 
         Route::middleware('superadmin')->group(function (): void {
+            Route::get('notificacoes', [NotificacaoController::class, 'index'])->name('notificacoes.index');
+            Route::post('notificacoes/mensagem-pos-inscricao', [NotificacaoController::class, 'salvarMensagemPosInscricao'])
+                ->name('notificacoes.mensagem-pos-inscricao');
+            Route::post('notificacoes/mensagem-confirmada', [NotificacaoController::class, 'salvarMensagemConfirmada'])
+                ->name('notificacoes.mensagem-confirmada');
+            Route::get('notificacoes/configuracao-wpp', [NotificacaoController::class, 'configuracaoWpp'])->name('notificacoes.configuracao-wpp');
+            Route::post('notificacoes/configuracao-wpp/teste-numero', [NotificacaoController::class, 'enviarTesteNumeroWpp'])
+                ->name('notificacoes.configuracao-wpp.teste-numero');
+            Route::post('notificacoes/configuracao-wpp/teste-departamento', [NotificacaoController::class, 'enviarTesteDepartamentoWpp'])
+                ->name('notificacoes.configuracao-wpp.teste-departamento');
+            Route::post('notificacoes/enviar-texto', [NotificacaoController::class, 'enviarTexto'])->name('notificacoes.enviar-texto');
+
             Route::get('configuracoes', [ConfiguracaoController::class, 'index'])->name('configuracoes.index');
             Route::post('configuracoes/acessos', [ConfiguracaoController::class, 'atribuirAcesso'])->name('configuracoes.acessos.store');
             Route::post('configuracoes/metas', [ConfiguracaoController::class, 'salvarMetas'])->name('configuracoes.metas.store');

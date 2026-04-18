@@ -122,6 +122,14 @@ a {
   opacity: 1;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
 .logo-mark--sm {
   width: 8px;
   height: 8px;
@@ -707,6 +715,8 @@ a.btn--hero-white:hover {
 }
 
 .field input[type="text"],
+.field input[type="email"],
+.field input[type="password"],
 .field input[type="tel"],
 .field input[type="number"],
 .field select.field__select {
@@ -968,9 +978,14 @@ a.btn--hero-white:hover {
     padding-top: 0.15rem;
   }
 
-  .btn--header-outline {
+  .header-actions {
     order: 2;
     margin-left: auto;
+    gap: 0.45rem;
+  }
+
+  .header-actions .btn--header-outline {
+    margin-left: 0;
   }
 
   .hero {

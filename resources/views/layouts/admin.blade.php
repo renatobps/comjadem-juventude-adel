@@ -122,20 +122,22 @@
                                             <span>Igrejas</span>
                                         </a>
                                     </li>
-                                    <li class="nav-parent {{ request()->routeIs('admin.notificacoes.*') ? 'nav-expanded nav-active' : '' }}">
-                                        <a class="nav-link" href="#">
-                                            <i class="bx bx-bell" aria-hidden="true"></i>
-                                            <span>Notificações</span>
-                                        </a>
-                                        <ul class="nav nav-children">
-                                            <li class="{{ request()->routeIs('admin.notificacoes.*') ? 'nav-active' : '' }}">
-                                                <a class="nav-link" href="{{ route('admin.notificacoes.index') }}">Notificações</a>
-                                            </li>
-                                            <li class="{{ request()->routeIs('admin.notificacoes.configuracao-wpp') ? 'nav-active' : '' }}">
-                                                <a class="nav-link" href="{{ route('admin.notificacoes.configuracao-wpp') }}">Configuração WPP</a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                    @if (Auth::user()->isAdmin())
+                                        <li class="nav-parent {{ request()->routeIs('admin.notificacoes.*') ? 'nav-expanded nav-active' : '' }}">
+                                            <a class="nav-link" href="#">
+                                                <i class="bx bx-bell" aria-hidden="true"></i>
+                                                <span>Notificações</span>
+                                            </a>
+                                            <ul class="nav nav-children">
+                                                <li class="{{ request()->routeIs('admin.notificacoes.*') ? 'nav-active' : '' }}">
+                                                    <a class="nav-link" href="{{ route('admin.notificacoes.index') }}">Notificações</a>
+                                                </li>
+                                                <li class="{{ request()->routeIs('admin.notificacoes.configuracao-wpp') ? 'nav-active' : '' }}">
+                                                    <a class="nav-link" href="{{ route('admin.notificacoes.configuracao-wpp') }}">Configuração WPP</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    @endif
                                     @if (Auth::user()->isAdmin())
                                         <li class="{{ request()->routeIs('admin.regionais.*') ? 'nav-active' : '' }}">
                                             <a class="nav-link" href="{{ route('admin.regionais.index') }}">

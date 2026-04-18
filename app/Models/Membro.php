@@ -35,4 +35,15 @@ class Membro extends Model
     {
         return $this->hasMany(MembroAcessoRegional::class);
     }
+
+    public function setTelefoneAttribute($value): void
+    {
+        if ($value === null) {
+            $this->attributes['telefone'] = null;
+
+            return;
+        }
+
+        $this->attributes['telefone'] = preg_replace('/\D+/', '', (string) $value) ?? '';
+    }
 }

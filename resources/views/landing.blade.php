@@ -26,7 +26,11 @@
           <a href="#sobre">Sobre</a>
           <a href="#local">Local</a>
         </nav>
-        <a href="#inscricao" class="btn btn--header-outline">Inscrições</a>
+        <div class="header-actions">
+          <a href="{{ route('membros.publico.create') }}" class="btn btn--header-outline">Cadastro membros</a>
+          <a href="{{ route('admin.login') }}" class="btn btn--header-outline">Login Admin</a>
+          <a href="#inscricao" class="btn btn--header-outline">Inscrições</a>
+        </div>
       </div>
     </header>
 
