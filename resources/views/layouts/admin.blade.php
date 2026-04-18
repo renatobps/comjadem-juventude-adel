@@ -46,6 +46,44 @@
             width: auto;
             max-width: 100%;
         }
+        .password-toggle-wrap {
+            position: relative;
+        }
+        .password-toggle-wrap .form-control {
+            padding-right: 2.8rem;
+        }
+        .password-toggle-inline-btn {
+            position: absolute;
+            top: 50%;
+            right: 0.4rem;
+            transform: translateY(-50%);
+            border: 0;
+            background: transparent;
+            color: #6c757d;
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+        .password-toggle-inline-btn:hover {
+            color: #212529;
+            background: rgba(0, 0, 0, 0.04);
+        }
+        .password-toggle-group-btn {
+            border: 0;
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            width: 100%;
+            height: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
     </style>
     <script src="{{ $porto }}/vendor/modernizr/modernizr.js"></script>
     @stack('head')
@@ -84,6 +122,11 @@
                         </a>
                         <div class="dropdown-menu">
                             <ul class="list-unstyled mb-2">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.perfil.edit') }}">
+                                        <i class="bx bx-user"></i> Meu perfil
+                                    </a>
+                                </li>
                                 <li class="divider"></li>
                                 <li>
                                     <form method="post" action="{{ route('admin.logout') }}" class="mb-0">
@@ -222,6 +265,57 @@
     <script src="{{ $porto }}/js/theme.js"></script>
     <script src="{{ $porto }}/js/custom.js"></script>
     <script src="{{ $porto }}/js/theme.init.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            var createToggleButton = function(input) {
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.setAttribute('aria-label', 'Mostrar senha');
+                button.innerHTML = '<i class="bx bx-show"></i>';
+
+                button.addEventListener('click', function() {
+                    var isPassword = input.type === 'password';
+                    input.type = isPassword ? 'text' : 'password';
+                    button.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+                    button.innerHTML = isPassword ? '<i class="bx bx-hide"></i>' : '<i class="bx bx-show"></i>';
+                });
+
+                return button;
+            };
+
+            document.querySelectorAll('input[type="password"]').forEach(function(input) {
+                if (input.dataset.passwordToggleReady === '1') return;
+                input.dataset.passwordToggleReady = '1';
+
+                var inputGroup = input.closest('.input-group');
+                var button = createToggleButton(input);
+
+                if (inputGroup) {
+                    var wrapper = inputGroup.querySelector('.input-group-text:last-child');
+                    if (!wrapper || !wrapper.querySelector('.bx-lock')) {
+                        wrapper = document.createElement('span');
+                        wrapper.className = 'input-group-text';
+                        inputGroup.appendChild(wrapper);
+                    } else {
+                        wrapper.innerHTML = '';
+                    }
+                    button.className = 'password-toggle-group-btn';
+                    wrapper.appendChild(button);
+                    return;
+                }
+
+                var inlineWrapper = document.createElement('div');
+                inlineWrapper.className = 'password-toggle-wrap';
+                input.parentNode.insertBefore(inlineWrapper, input);
+                inlineWrapper.appendChild(input);
+
+                button.className = 'password-toggle-inline-btn';
+                inlineWrapper.appendChild(button);
+            });
+        })();
+    </script>
     @stack('scripts')
 </body>
 </html>

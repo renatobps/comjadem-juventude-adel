@@ -66,6 +66,39 @@
         flex-wrap: wrap;
       }
 
+      .password-toggle-wrap {
+        position: relative;
+      }
+
+      .password-toggle-wrap input {
+        padding-right: 2.8rem;
+      }
+
+      .password-toggle-btn {
+        position: absolute;
+        top: 50%;
+        right: 0.4rem;
+        transform: translateY(-50%);
+        border: 0;
+        background: transparent;
+        color: var(--text-muted);
+        width: 2rem;
+        height: 2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .password-toggle-btn:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
       .member-back {
         border: 1px solid rgba(255, 255, 255, 0.35);
         color: #fff;
@@ -184,6 +217,33 @@
         });
 
         input.value = formatPhone(input.value);
+      })();
+
+      (function () {
+        var inputs = document.querySelectorAll('input[type="password"]');
+        if (!inputs.length) return;
+
+        inputs.forEach(function (input) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'password-toggle-wrap';
+          input.parentNode.insertBefore(wrapper, input);
+          wrapper.appendChild(input);
+
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'password-toggle-btn';
+          button.setAttribute('aria-label', 'Mostrar senha');
+          button.textContent = 'ver';
+
+          button.addEventListener('click', function () {
+            var isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            button.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+            button.textContent = isPassword ? 'ocultar' : 'ver';
+          });
+
+          wrapper.appendChild(button);
+        });
       })();
     </script>
   </body>

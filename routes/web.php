@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IgrejaController;
 use App\Http\Controllers\Admin\MembroController;
 use App\Http\Controllers\Admin\NotificacaoController;
+use App\Http\Controllers\Admin\PerfilController;
 use App\Http\Controllers\Admin\PreInscricaoController as AdminPreInscricaoController;
 use App\Http\Controllers\Admin\PreInscricaoStatusController;
 use App\Http\Controllers\Admin\RegionalController;
@@ -31,6 +32,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
 
     Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
+        Route::put('perfil', [PerfilController::class, 'update'])->name('perfil.update');
         Route::resource('igrejas', IgrejaController::class)->except(['show']);
         Route::get('inscricoes/{pre_inscricao}/edit', [AdminPreInscricaoController::class, 'edit'])
             ->name('inscricoes.edit');
