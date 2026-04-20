@@ -145,31 +145,6 @@
             .app-toast {
                 min-width: 100%;
             }
-            #userbox .profile-info,
-            #userbox .custom-caret {
-                display: none !important;
-            }
-            #userbox > a {
-                padding-right: 0;
-            }
-            #userbox .profile-picture {
-                margin: 0;
-            }
-            #userbox .profile-picture img,
-            #userbox .profile-picture .profile-picture__fallback {
-                width: 40px;
-                height: 40px;
-                border-radius: 999px;
-                object-fit: cover;
-            }
-        }
-        .profile-picture__fallback {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #f1f4f9;
-            color: #1f2937;
-            border: 1px solid #d9e2ef;
         }
     </style>
     <script src="{{ $porto }}/vendor/modernizr/modernizr.js"></script>
@@ -195,26 +170,12 @@
                     <div id="userbox" class="userbox">
                         @php($membroUsuario = Auth::user()->membroPorEmail()->with('cargo')->first())
                         @php($cargoUsuario = $membroUsuario?->cargo?->nome)
+                        @php($fotoPadraoUsuario = $porto . '/img/!logged-user.jpg')
                         @php($caminhoFotoUsuario = $membroUsuario?->foto)
-                        @php($fotoUsuario = $caminhoFotoUsuario && \Illuminate\Support\Facades\Storage::disk('public')->exists($caminhoFotoUsuario) ? asset('storage/' . $caminhoFotoUsuario) : null)
+                        @php($fotoUsuario = $caminhoFotoUsuario && \Illuminate\Support\Facades\Storage::disk('public')->exists($caminhoFotoUsuario) ? asset('storage/' . $caminhoFotoUsuario) : $fotoPadraoUsuario)
                         <a href="#" data-bs-toggle="dropdown">
                             <figure class="profile-picture">
-                                @if ($fotoUsuario)
-                                    <img
-                                        src="{{ $fotoUsuario }}"
-                                        alt="Foto de {{ Auth::user()->name }}"
-                                        class="rounded-circle"
-                                        data-lock-picture="{{ $fotoUsuario }}"
-                                        onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"
-                                    >
-                                    <span class="profile-picture__fallback" aria-hidden="true" style="display:none;">
-                                        <i class="bx bx-user"></i>
-                                    </span>
-                                @else
-                                    <span class="profile-picture__fallback" aria-hidden="true">
-                                        <i class="bx bx-user"></i>
-                                    </span>
-                                @endif
+                                <img src="{{ $fotoUsuario }}" alt="" class="rounded-circle" data-lock-picture="{{ $fotoUsuario }}" onerror="this.onerror=null;this.src='{{ $fotoPadraoUsuario }}';" />
                             </figure>
                             <div class="profile-info" data-lock-name="{{ Auth::user()->name }}" data-lock-email="{{ Auth::user()->email }}">
                                 <span class="name">{{ Auth::user()->name }}</span>
