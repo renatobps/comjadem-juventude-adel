@@ -75,36 +75,250 @@
             padding: 1rem;
         }
         .meta-progress {
-            height: 10px;
+            height: 14px;
             border-radius: 999px;
             overflow: hidden;
-            background: #e9ecef;
+            background: #e9edf3;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         .meta-progress__bar {
             height: 100%;
+            position: relative;
             background: linear-gradient(90deg, #4aa3ff 0%, #1c7ed6 100%);
+            transition: width 0.5s ease;
+            animation: meta-bar-in 0.7s ease-out;
+        }
+        .meta-progress__bar-text {
+            position: absolute;
+            right: 0.45rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.66rem;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+        }
+        .meta-progress__bar.bg-warning .meta-progress__bar-text {
+            color: #5f4b00;
+            text-shadow: none;
         }
         .meta-regionais-lista {
-            margin-top: 1rem;
-            border-top: 1px solid #e9ecef;
-            padding-top: 0.75rem;
+            margin-top: 1.1rem;
+            display: grid;
+            gap: 0.65rem;
+        }
+        @media (min-width: 992px) {
+            .meta-regionais-lista {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
         .meta-regionais-item {
-            padding: 0.6rem 0 0.8rem;
-            border-bottom: 1px dashed #e9ecef;
+            padding: 0.7rem 0.75rem;
+            border: 1px solid #edf1f6;
+            border-radius: 0.55rem;
+            background: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
-        .meta-regionais-item:last-child {
-            border-bottom: 0;
+        .meta-regionais-item:hover {
+            border-color: #dbe7f5;
+            box-shadow: 0 8px 16px rgba(31, 111, 235, 0.08);
+            transform: translateY(-1px);
+        }
+        .meta-regionais-item__top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.55rem;
+        }
+        .meta-regionais-item__nome {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+        .meta-regionais-item__numeros {
+            margin: 0;
+            color: #4c5562;
+            font-size: 0.78rem;
+        }
+        .meta-regionais-item__percentual {
+            font-size: 0.9rem;
+            font-weight: 700;
+            line-height: 1;
+            border-radius: 999px;
+            padding: 0.22rem 0.5rem;
+            background: #eef2f7;
         }
         .meta-regionais-progress {
-            height: 8px;
+            height: 10px;
             border-radius: 999px;
             overflow: hidden;
-            background: #e9ecef;
+            background: #edf1f6;
         }
         .meta-regionais-progress__bar {
             height: 100%;
-            background: linear-gradient(90deg, #5ba3eb 0%, #2d7dd2 100%);
+            transition: width 0.5s ease;
+            animation: meta-bar-in 0.7s ease-out;
+        }
+        .meta-resumo-geral {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.85rem 1rem;
+        }
+        .meta-resumo-geral__titulo {
+            margin: 0 0 0.15rem;
+            font-size: 0.95rem;
+        }
+        .meta-resumo-geral__texto {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.84rem;
+        }
+        .meta-resumo-geral__numero {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #dfe7f2;
+            border-radius: 999px;
+            background: #f8fafd;
+            padding: 0.35rem 0.7rem;
+            white-space: nowrap;
+        }
+        .meta-resumo-geral__valor {
+            font-size: 1.2rem;
+            line-height: 1;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .meta-resumo-geral__percentual {
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 0.2rem 0.45rem;
+            background: #e8f1ff;
+            color: #0d6efd;
+        }
+        .meta-regionais-item__faltam {
+            margin-top: 0.35rem;
+            font-size: 0.74rem;
+            color: #6c757d;
+        }
+        @keyframes meta-bar-in {
+            from {
+                width: 0;
+            }
+            to {
+                width: var(--meta-width, 0);
+            }
+        }
+        .inscricoes-dados-lista {
+            display: grid;
+            gap: 0.75rem;
+        }
+        @media (min-width: 992px) {
+            .inscricoes-dados-lista {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        .inscricoes-dados-item {
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            padding: 0.85rem;
+            background: #fff;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+        .inscricoes-dados-item:hover {
+            transform: translateY(-1px);
+            border-color: #d6e4f7;
+            box-shadow: 0 8px 20px rgba(31, 111, 235, 0.08);
+        }
+        .inscricoes-dados-item h5 {
+            margin-bottom: 0.45rem;
+        }
+        .inscricoes-metricas {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.6rem;
+            margin-top: 0.55rem;
+        }
+        .inscricoes-metrica {
+            border-radius: 0.45rem;
+            border: 1px solid #edf1f7;
+            background: #f8fafc;
+            padding: 0.55rem 0.6rem;
+            min-height: 84px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .inscricoes-metrica__topo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 0.3rem;
+        }
+        .inscricoes-metrica__icone {
+            font-size: 0.85rem;
+        }
+        .inscricoes-metrica__label {
+            font-size: 0.68rem;
+            color: #6c757d;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+        .inscricoes-metrica__valor {
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #212529;
+        }
+        .inscricoes-metrica--total .inscricoes-metrica__icone {
+            color: #0d6efd;
+        }
+        .inscricoes-metrica--pagas .inscricoes-metrica__icone {
+            color: #198754;
+        }
+        .inscricoes-metrica--valor .inscricoes-metrica__icone {
+            color: #0dcaf0;
+        }
+        .inscricoes-pagamento-progresso {
+            margin-top: 0.65rem;
+        }
+        .inscricoes-pagamento-progresso__linha {
+            height: 6px;
+            border-radius: 999px;
+            background: #eef2f6;
+            overflow: hidden;
+        }
+        .inscricoes-pagamento-progresso__barra {
+            height: 100%;
+            background: linear-gradient(90deg, #198754 0%, #20c997 100%);
+        }
+        .inscricoes-pagamento-progresso__texto {
+            margin-top: 0.3rem;
+            font-size: 0.78rem;
+            color: #6c757d;
+        }
+        @media (max-width: 576px) {
+            .inscricoes-metricas {
+                grid-template-columns: 1fr;
+            }
+        }
+        .status-resumo-lista {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .status-resumo-pill {
+            border: 1px solid #e9ecef;
+            border-radius: 999px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.85rem;
+            background: #f8f9fa;
         }
         /* DataTables: o filtro vem em col-12 e o input herdava largura total */
         #datatable-tabletools_wrapper .dataTables_filter {
@@ -179,33 +393,45 @@
         <div class="col-lg-6">
             <section class="card card-featured-left card-featured-primary h-100">
                 <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div class="meta-resumo-geral">
                         <div>
-                            <h4 class="mb-1">Inscrições totais x meta</h4>
-                            <p class="mb-0 text-muted">
-                                <strong class="text-dark">{{ $total }}</strong> de {{ $metaInscricoes }} inscrições ({{ $percentualMeta }}%)
-                            </p>
+                            <h4 class="meta-resumo-geral__titulo">Inscrições totais x meta</h4>
+                            <p class="meta-resumo-geral__texto">{{ $total }} de {{ $metaInscricoes }} inscrições</p>
                         </div>
-                        <div class="text-end">
-                            <strong class="h5 mb-0">{{ $total }}/{{ $metaInscricoes }}</strong>
+                        <div class="meta-resumo-geral__numero">
+                            <strong class="meta-resumo-geral__valor">{{ $total }}/{{ $metaInscricoes }}</strong>
+                            <span class="meta-resumo-geral__percentual">{{ $percentualMeta }}%</span>
                         </div>
                     </div>
                     <div class="meta-progress mt-3">
-                        <div class="meta-progress__bar" style="width: {{ $percentualMeta }}%;"></div>
+                        <div
+                            class="meta-progress__bar {{ $percentualMeta <= 40 ? 'bg-danger' : ($percentualMeta <= 70 ? 'bg-warning' : 'bg-success') }}"
+                            style="width: {{ $percentualMeta }}%; --meta-width: {{ $percentualMeta }}%;"
+                        >
+                            <span class="meta-progress__bar-text">{{ $percentualMeta }}%</span>
+                        </div>
                     </div>
                     @if ($metasRegionais->isNotEmpty())
+                        @php($metasRegionaisOrdenadas = $metasRegionais->sortByDesc('percentual')->values())
                         <div class="meta-regionais-lista">
-                            @foreach ($metasRegionais as $item)
+                            @foreach ($metasRegionaisOrdenadas as $item)
+                                @php($faltamMeta = max(0, (int) $item['meta'] - (int) $item['inscricoes_atual']))
+                                @php($percentualRegional = (int) $item['percentual'])
                                 <div class="meta-regionais-item">
-                                    <div>
-                                        <strong>Inscrições totais x meta {{ $item['regional']->nome }}</strong>
-                                        <div class="text-muted">
-                                            {{ $item['inscricoes_atual'] }} de {{ $item['meta'] }} inscrições ({{ $item['percentual'] }}%)
+                                    <div class="meta-regionais-item__top">
+                                        <div>
+                                            <h6 class="meta-regionais-item__nome">{{ $item['regional']->nome }}</h6>
+                                            <p class="meta-regionais-item__numeros">{{ $item['inscricoes_atual'] }} / {{ $item['meta'] }}</p>
                                         </div>
+                                        <span class="meta-regionais-item__percentual">{{ $percentualRegional }}%</span>
                                     </div>
-                                    <div class="meta-regionais-progress mt-2">
-                                        <div class="meta-regionais-progress__bar" style="width: {{ $item['percentual'] }}%;"></div>
+                                    <div class="meta-regionais-progress">
+                                        <div
+                                            class="meta-regionais-progress__bar {{ $percentualRegional <= 40 ? 'bg-danger' : ($percentualRegional <= 70 ? 'bg-warning' : 'bg-success') }}"
+                                            style="width: {{ $percentualRegional }}%; --meta-width: {{ $percentualRegional }}%;"
+                                        ></div>
                                     </div>
+                                    <p class="meta-regionais-item__faltam">Faltam {{ $faltamMeta }} para a meta</p>
                                 </div>
                             @endforeach
                         </div>
@@ -213,24 +439,64 @@
                 </div>
             </section>
         </div>
-        @php($pieSeries = $regionaisCards->filter(fn ($card) => $card['total'] > 0)->map(function ($card) {
-            return [
-                'label' => $card['regional']->nome,
-                'data' => [[1, $card['total']]],
-            ];
-        })->values())
         <div class="col-lg-6">
             <section class="card h-100">
                 <header class="card-header">
-                    <h2 class="card-title">Inscrições por regional</h2>
-                    <p class="card-subtitle">Distribuição das pré-inscrições por regional.</p>
+                    <h2 class="card-title">Dados de inscrições</h2>
+                    <p class="card-subtitle">Resumo por regional e status.</p>
                 </header>
                 <div class="card-body">
-                    @if ($pieSeries->isEmpty())
-                        <p class="text-muted mb-0">Sem inscrições para exibir no gráfico.</p>
+                    @if ($regionaisCards->isEmpty())
+                        <p class="text-muted mb-0">Sem regionais para exibir.</p>
                     @else
-                        <div class="chart chart-md" id="flotPieRegionais"></div>
+                        <div class="inscricoes-dados-lista">
+                            @foreach ($regionaisCards as $card)
+                                <article class="inscricoes-dados-item">
+                                    <h5 class="mb-1">{{ $card['regional']->nome }}</h5>
+                                    <div class="inscricoes-metricas">
+                                        <div class="inscricoes-metrica inscricoes-metrica--total">
+                                            <div class="inscricoes-metrica__topo">
+                                                <i class="fas fa-users inscricoes-metrica__icone" aria-hidden="true"></i>
+                                                <span class="inscricoes-metrica__label">Total</span>
+                                            </div>
+                                            <span class="inscricoes-metrica__valor">{{ $card['total'] }}</span>
+                                        </div>
+                                        <div class="inscricoes-metrica inscricoes-metrica--pagas">
+                                            <div class="inscricoes-metrica__topo">
+                                                <i class="fas fa-check-circle inscricoes-metrica__icone" aria-hidden="true"></i>
+                                                <span class="inscricoes-metrica__label">Pagas</span>
+                                            </div>
+                                            <span class="inscricoes-metrica__valor">{{ $card['confirmadas'] }}</span>
+                                        </div>
+                                        <div class="inscricoes-metrica inscricoes-metrica--valor">
+                                            <div class="inscricoes-metrica__topo">
+                                                <i class="fas fa-money-bill-wave inscricoes-metrica__icone" aria-hidden="true"></i>
+                                                <span class="inscricoes-metrica__label">Valor</span>
+                                            </div>
+                                            <span class="inscricoes-metrica__valor">R$ {{ number_format($card['valor_arrecadado'], 2, ',', '.') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="inscricoes-pagamento-progresso">
+                                        <div class="inscricoes-pagamento-progresso__linha">
+                                            <div class="inscricoes-pagamento-progresso__barra" style="width: {{ $card['percentual_pagamentos'] }}%;"></div>
+                                        </div>
+                                        <div class="inscricoes-pagamento-progresso__texto">
+                                            Percentual de pagamentos: <strong>{{ $card['percentual_pagamentos'] }}%</strong>
+                                        </div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
                     @endif
+
+                    <hr>
+                    <h6 class="mb-2">Inscrições por status</h6>
+                    <div class="status-resumo-lista">
+                        @foreach ($statusResumo as $item)
+                            <span class="status-resumo-pill">{{ $item['label'] }}: <strong>{{ $item['total'] }}</strong></span>
+                        @endforeach
+                    </div>
+                    <p class="text-muted mb-0 mt-2">Valor unitário da inscrição: <strong>R$ {{ number_format($valorInscricao, 2, ',', '.') }}</strong></p>
                 </div>
             </section>
         </div>
@@ -460,8 +726,6 @@
 
 @push('scripts')
     @if ($hasRows)
-        <script src="{{ $porto }}/vendor/flot/jquery.flot.js"></script>
-        <script src="{{ $porto }}/vendor/flot/jquery.flot.pie.js"></script>
         <script src="{{ $porto }}/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
         <script src="{{ $porto }}/vendor/datatables/media/js/dataTables.bootstrap5.min.js"></script>
         <script src="{{ $porto }}/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
@@ -475,39 +739,6 @@
             (function($) {
                 'use strict';
                 $(function() {
-                    var pieData = @json($pieSeries);
-                    if (pieData.length && $('#flotPieRegionais').length) {
-                        var pieColors = ['#0088cc', '#2baab1', '#734ba9', '#E36159', '#f0ad4e', '#5cb85c', '#6c757d'];
-                        pieData = pieData.map(function(item, index) {
-                            item.color = pieColors[index % pieColors.length];
-                            return item;
-                        });
-
-                        $.plot('#flotPieRegionais', pieData, {
-                            series: {
-                                pie: {
-                                    show: true,
-                                    label: {
-                                        show: true,
-                                        radius: 1,
-                                        formatter: function(label, series) {
-                                            var valor = 0;
-                                            if (series && series.data && series.data.length && series.data[0].length > 1) {
-                                                valor = series.data[0][1];
-                                            }
-                                            return '<div style="font-size:x-small;text-align:center;padding:2px;color:' +
-                                                series.color + ';">' + label + '<br>' + valor + '</div>';
-                                        },
-                                        threshold: 0.03
-                                    }
-                                }
-                            },
-                            legend: {
-                                show: false
-                            }
-                        });
-                    }
-
                     var $table = $('#datatable-tabletools');
                     /* Normaliza células com HTML para exportação (print/excel/pdf). */
                     var exportOpts = {
@@ -573,6 +804,30 @@
                     $('<div />').addClass('dt-buttons mb-2 pb-1 text-end').prependTo('#datatable-tabletools_wrapper');
                     dt.buttons().container().prependTo('#datatable-tabletools_wrapper .dt-buttons');
                     $('#datatable-tabletools_wrapper').find('.btn-secondary').removeClass('btn-secondary').addClass('btn-default');
+
+                    function showAppToast(message, type) {
+                        var stack = document.getElementById('appToastStack');
+                        if (!stack) return;
+                        var variant = type === 'success' ? 'success' : 'danger';
+                        var toast = document.createElement('div');
+                        toast.className = 'alert alert-' + variant + ' alert-dismissible fade show app-toast mb-0';
+                        toast.setAttribute('role', 'alert');
+                        var text = document.createElement('span');
+                        text.textContent = String(message || '');
+                        var close = document.createElement('button');
+                        close.type = 'button';
+                        close.className = 'btn-close';
+                        close.setAttribute('data-bs-dismiss', 'alert');
+                        close.setAttribute('aria-label', 'Fechar');
+                        toast.appendChild(text);
+                        toast.appendChild(close);
+                        stack.appendChild(toast);
+                        window.setTimeout(function() {
+                            if (toast && toast.parentNode) {
+                                toast.remove();
+                            }
+                        }, 3200);
+                    }
 
                     var csrf = document.querySelector('meta[name="csrf-token"]');
                     var csrfToken = csrf ? csrf.getAttribute('content') : '';
@@ -651,10 +906,10 @@
                                     var label = $('#statusModalSelect option:selected').text();
                                     $statusCell.find('.js-status-text').text(label);
                                     closeStatusModal();
-                                    alert('Status alterado com sucesso.');
+                                    showAppToast('Status alterado com sucesso.', 'success');
                                 })
                                 .catch(function(err) {
-                                    alert(err.message || 'Não foi possível atualizar o status.');
+                                    showAppToast(err.message || 'Não foi possível atualizar o status.', 'error');
                                 })
                                 .finally(function() {
                                     modalSaveBtn.disabled = false;

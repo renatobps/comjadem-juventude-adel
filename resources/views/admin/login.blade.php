@@ -4,7 +4,7 @@
 
 @section('content')
     <a href="{{ url('/') }}" class="logo float-start">
-        <img src="/logoComjadem.png" height="70" alt="{{ config('app.name') }}">
+        <img src="/comjadem.png" height="70" alt="{{ config('app.name') }}">
     </a>
     <div class="panel card-sign">
         <div class="card-title-sign mt-3 text-end">

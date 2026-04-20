@@ -20,7 +20,7 @@
     <header class="site-header">
       <div class="container header-inner">
         <a href="#topo" class="header-logo" aria-label="Início — CONJADEM">
-          <img class="header-logo__img" src="/logoComjadem.png" alt="COMJADEM" />
+          <img class="header-logo__img" src="/comjadem.png" alt="COMJADEM" />
         </a>
         <nav class="header-nav" aria-label="Menu principal">
           <a href="#sobre">Sobre</a>

@@ -35,6 +35,22 @@
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div class="col-md-4">
+                            <label for="valor_inscricao" class="form-label">Valor da inscrição (R$)</label>
+                            <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                name="valor_inscricao"
+                                id="valor_inscricao"
+                                class="form-control"
+                                value="{{ old('valor_inscricao', number_format($valorInscricao, 2, '.', '')) }}"
+                                required
+                            >
+                            @error('valor_inscricao')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
                         <div class="col-12">
                             <div class="row">
                                 @foreach ($regionais as $regional)

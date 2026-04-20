@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin') — {{ config('app.name') }}</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ $porto }}/vendor/bootstrap/css/bootstrap.css" />
@@ -84,17 +84,105 @@
             justify-content: center;
             cursor: pointer;
         }
+        .app-toast-stack {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            z-index: 2100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .app-toast {
+            pointer-events: auto;
+            min-width: min(360px, calc(100vw - 2rem));
+            border-radius: 0.6rem;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+        }
+        @media (max-width: 768px) {
+            .content-body .page-header h2 {
+                font-size: 1.15rem;
+            }
+            .content-body .card-title {
+                font-size: 1rem;
+            }
+            .content-body .card-subtitle {
+                font-size: 0.86rem;
+            }
+            .content-body .btn,
+            .content-body .form-control,
+            .content-body .dropdown-item {
+                min-height: 44px;
+            }
+            .content-body .form-label {
+                font-size: 0.86rem;
+            }
+            #sidebar-left .nav-main .nav-link {
+                min-height: 44px;
+                font-size: 0.96rem;
+                border-radius: 10px;
+                margin: 2px 8px;
+                display: flex;
+                align-items: center;
+            }
+            #sidebar-left .nav-main .nav-children .nav-link {
+                padding-left: 2.2rem;
+            }
+            #sidebar-left .nano-content {
+                padding-bottom: 1rem;
+            }
+            #userbox > a {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+            }
+            .app-toast-stack {
+                right: 0.7rem;
+                left: 0.7rem;
+                bottom: 0.7rem;
+            }
+            .app-toast {
+                min-width: 100%;
+            }
+            #userbox .profile-info,
+            #userbox .custom-caret {
+                display: none !important;
+            }
+            #userbox > a {
+                padding-right: 0;
+            }
+            #userbox .profile-picture {
+                margin: 0;
+            }
+            #userbox .profile-picture img,
+            #userbox .profile-picture .profile-picture__fallback {
+                width: 40px;
+                height: 40px;
+                border-radius: 999px;
+                object-fit: cover;
+            }
+        }
+        .profile-picture__fallback {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f4f9;
+            color: #1f2937;
+            border: 1px solid #d9e2ef;
+        }
     </style>
     <script src="{{ $porto }}/vendor/modernizr/modernizr.js"></script>
     @stack('head')
 </head>
 <body>
+    <div id="appToastStack" class="app-toast-stack" aria-live="polite" aria-atomic="true"></div>
     @auth
         <section class="body">
             <header class="header">
                 <div class="logo-container">
                     <a href="{{ route('admin.dashboard') }}" class="logo">
-                        <img src="/logoComjadem.png" width="120" height="40" alt="{{ config('app.name') }}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';">
+                        <img src="/comjadem.png" width="120" height="40" alt="{{ config('app.name') }}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';">
                         <span style="display:none;font-weight:700;">{{ config('app.name') }}</span>
                     </a>
                     <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
@@ -107,12 +195,26 @@
                     <div id="userbox" class="userbox">
                         @php($membroUsuario = Auth::user()->membroPorEmail()->with('cargo')->first())
                         @php($cargoUsuario = $membroUsuario?->cargo?->nome)
-                        @php($fotoPadraoUsuario = $porto . '/img/!logged-user.jpg')
                         @php($caminhoFotoUsuario = $membroUsuario?->foto)
-                        @php($fotoUsuario = $caminhoFotoUsuario && \Illuminate\Support\Facades\Storage::disk('public')->exists($caminhoFotoUsuario) ? asset('storage/' . $caminhoFotoUsuario) : $fotoPadraoUsuario)
+                        @php($fotoUsuario = $caminhoFotoUsuario && \Illuminate\Support\Facades\Storage::disk('public')->exists($caminhoFotoUsuario) ? asset('storage/' . $caminhoFotoUsuario) : null)
                         <a href="#" data-bs-toggle="dropdown">
                             <figure class="profile-picture">
-                                <img src="{{ $fotoUsuario }}" alt="" class="rounded-circle" data-lock-picture="{{ $fotoUsuario }}" onerror="this.onerror=null;this.src='{{ $fotoPadraoUsuario }}';" />
+                                @if ($fotoUsuario)
+                                    <img
+                                        src="{{ $fotoUsuario }}"
+                                        alt="Foto de {{ Auth::user()->name }}"
+                                        class="rounded-circle"
+                                        data-lock-picture="{{ $fotoUsuario }}"
+                                        onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"
+                                    >
+                                    <span class="profile-picture__fallback" aria-hidden="true" style="display:none;">
+                                        <i class="bx bx-user"></i>
+                                    </span>
+                                @else
+                                    <span class="profile-picture__fallback" aria-hidden="true">
+                                        <i class="bx bx-user"></i>
+                                    </span>
+                                @endif
                             </figure>
                             <div class="profile-info" data-lock-name="{{ Auth::user()->name }}" data-lock-email="{{ Auth::user()->email }}">
                                 <span class="name">{{ Auth::user()->name }}</span>

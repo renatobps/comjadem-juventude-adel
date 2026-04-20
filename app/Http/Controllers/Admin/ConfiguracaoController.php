@@ -27,6 +27,7 @@ class ConfiguracaoController extends Controller
                 ->get(),
             'regionais' => Regional::query()->orderBy('nome')->get(),
             'metaTotal' => (int) ($metaConfig->meta_total ?? 500),
+            'valorInscricao' => (float) ($metaConfig->valor_inscricao ?? 0),
             'metasRegionais' => $metasRegionais,
             'admins' => User::query()->where('is_admin', true)->orderBy('name')->get(),
         ]);
@@ -74,6 +75,7 @@ class ConfiguracaoController extends Controller
     {
         $validated = $request->validate([
             'meta_total' => ['required', 'integer', 'min:1'],
+            'valor_inscricao' => ['required', 'numeric', 'min:0'],
             'metas_regionais' => ['required', 'array'],
             'metas_regionais.*' => ['nullable', 'integer', 'min:0'],
         ]);
@@ -85,11 +87,13 @@ class ConfiguracaoController extends Controller
                     ->where('id', $configAtual->id)
                     ->update([
                         'meta_total' => (int) $validated['meta_total'],
+                        'valor_inscricao' => round((float) $validated['valor_inscricao'], 2),
                         'updated_at' => now(),
                     ]);
             } else {
                 DB::table('inscricao_meta_configuracoes')->insert([
                     'meta_total' => (int) $validated['meta_total'],
+                    'valor_inscricao' => round((float) $validated['valor_inscricao'], 2),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

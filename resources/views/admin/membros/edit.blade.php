@@ -46,10 +46,12 @@
                         <div class="form-group mb-3">
                             <label for="foto">Foto do membro</label>
                             <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
-                            @if ($membro->foto)
+                            @if ($membro->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($membro->foto))
                                 <div class="mt-2">
                                     <img src="{{ asset('storage/' . $membro->foto) }}" alt="Foto de {{ $membro->nome }}" style="max-width: 120px; border-radius: 6px;">
                                 </div>
+                            @elseif ($membro->foto)
+                                <small class="d-block mt-2 text-muted">Foto antiga não encontrada no armazenamento.</small>
                             @endif
                             <small class="text-muted">Formatos: JPG, PNG, WEBP. Tamanho máximo: 2MB.</small>
                             @error('foto')

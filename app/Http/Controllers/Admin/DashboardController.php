@@ -59,6 +59,26 @@ class DashboardController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
+        $queryStatusResumo = PreInscricao::query();
+        if (! empty($regionalScopeIds)) {
+            if ($selectedRegionalId) {
+                $queryStatusResumo->whereHas('igrejaRel', function ($q) use ($selectedRegionalId): void {
+                    $q->where('regional_id', $selectedRegionalId);
+                });
+            } else {
+                $queryStatusResumo->whereHas('igrejaRel', function ($q) use ($regionalScopeIds): void {
+                    $q->whereIn('regional_id', $regionalScopeIds);
+                });
+            }
+        } elseif ($selectedRegionalId) {
+            $queryStatusResumo->whereHas('igrejaRel', function ($q) use ($selectedRegionalId): void {
+                $q->where('regional_id', $selectedRegionalId);
+            });
+        }
+        if ($selectedIgrejaId) {
+            $queryStatusResumo->where('igreja_id', $selectedIgrejaId);
+        }
+
         $regionaisFiltro = Regional::query()
             ->withCount('igrejas')
             ->when(! empty($regionalScopeIds), fn ($q) => $q->whereIn('id', $regionalScopeIds))
@@ -70,28 +90,60 @@ class DashboardController extends Controller
             ->orderBy('bairro')
             ->get();
         $inscricoesPorRegionalQuery = PreInscricao::query()
-            ->selectRaw('igrejas.regional_id, COUNT(*) as total')
+            ->selectRaw(
+                'igrejas.regional_id, COUNT(*) as total, SUM(CASE WHEN pre_inscricoes.status = ? THEN 1 ELSE 0 END) as confirmadas',
+                [PreInscricao::STATUS_CONFIRMADA]
+            )
             ->join('igrejas', 'pre_inscricoes.igreja_id', '=', 'igrejas.id')
             ->whereNotNull('igrejas.regional_id');
         if (! empty($regionalScopeIds)) {
             $inscricoesPorRegionalQuery->whereIn('igrejas.regional_id', $regionalScopeIds);
         }
+        if ($selectedRegionalId) {
+            $inscricoesPorRegionalQuery->where('igrejas.regional_id', $selectedRegionalId);
+        }
+        if ($selectedIgrejaId) {
+            $inscricoesPorRegionalQuery->where('pre_inscricoes.igreja_id', $selectedIgrejaId);
+        }
         $inscricoesPorRegional = $inscricoesPorRegionalQuery
             ->groupBy('igrejas.regional_id')
-            ->pluck('total', 'igrejas.regional_id')
-            ->mapWithKeys(fn ($total, $regionalId) => [(int) $regionalId => (int) $total]);
-        $regionaisCards = $regionaisFiltro->map(function (Regional $regional) use ($inscricoesPorRegional) {
+            ->get()
+            ->keyBy('regional_id');
+        $metaConfig = DB::table('inscricao_meta_configuracoes')->first();
+        $valorInscricao = isset($metaConfig->valor_inscricao) ? (float) $metaConfig->valor_inscricao : 0.0;
+        $regionaisCards = $regionaisFiltro->map(function (Regional $regional) use ($inscricoesPorRegional, $valorInscricao) {
+            $regionalData = $inscricoesPorRegional->get((int) $regional->id);
+            $totalRegional = (int) ($regionalData->total ?? 0);
+            $confirmadasRegional = (int) ($regionalData->confirmadas ?? 0);
+            $percentualPagamentos = $totalRegional > 0
+                ? (int) round(($confirmadasRegional / $totalRegional) * 100)
+                : 0;
+
             return [
                 'regional' => $regional,
-                'total' => (int) ($inscricoesPorRegional[$regional->id] ?? 0),
+                'total' => $totalRegional,
+                'confirmadas' => $confirmadasRegional,
+                'valor_arrecadado' => round($confirmadasRegional * $valorInscricao, 2),
+                'percentual_pagamentos' => max(0, min(100, $percentualPagamentos)),
             ];
         });
-        $metaConfig = DB::table('inscricao_meta_configuracoes')->first();
         $metaInscricoes = (int) ($metaConfig->meta_total ?? 500);
         $metaPorRegional = DB::table('inscricao_meta_regionais')
             ->pluck('meta', 'regional_id')
             ->mapWithKeys(fn ($meta, $regionalId) => [(int) $regionalId => (int) $meta]);
         $totalInscricoes = (clone $query)->toBase()->getCountForPagination();
+        $inscricoesPorStatus = $queryStatusResumo
+            ->select('status', DB::raw('COUNT(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $statusOptions = PreInscricao::statusOptions();
+        $statusResumo = collect($statusOptions)->map(function (string $label, string $status) use ($inscricoesPorStatus) {
+            return [
+                'status' => $status,
+                'label' => $label,
+                'total' => (int) ($inscricoesPorStatus[$status] ?? 0),
+            ];
+        })->values();
         $percentualMeta = $metaInscricoes > 0
             ? min(100, (int) round(($totalInscricoes / $metaInscricoes) * 100))
             : 0;
@@ -105,7 +157,8 @@ class DashboardController extends Controller
             $base = $regionaisComIgrejas->map(function (Regional $regional) use ($metaInscricoes, $totalIgrejas, $inscricoesPorRegional) {
                 $raw = ($regional->igrejas_count / $totalIgrejas) * $metaInscricoes;
                 $floor = (int) floor($raw);
-                $inscricoesAtual = (int) $inscricoesPorRegional->get((int) $regional->id, 0);
+                $regionalData = $inscricoesPorRegional->get((int) $regional->id);
+                $inscricoesAtual = (int) ($regionalData->total ?? 0);
 
                 return [
                     'regional' => $regional,
@@ -167,9 +220,11 @@ class DashboardController extends Controller
             'selectedPerPage' => $perPage,
             'regionaisCards' => $regionaisCards,
             'metaInscricoes' => $metaInscricoes,
+            'valorInscricao' => $valorInscricao,
             'percentualMeta' => $percentualMeta,
             'metasRegionais' => $metasRegionais,
             'totalIgrejasMeta' => $totalIgrejas,
+            'statusResumo' => $statusResumo,
         ]);
     }
 }
