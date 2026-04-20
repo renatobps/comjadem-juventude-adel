@@ -369,6 +369,7 @@
                                     <th>Nome</th>
                                     <th>Idade</th>
                                     <th>WhatsApp</th>
+                                    <th>Tamanho da camiseta</th>
                                     <th>Nome da igreja</th>
                                     <th>Regional</th>
                                     <th>Líder</th>
@@ -383,6 +384,7 @@
                                         <td>{{ $row->nome }}</td>
                                         <td>{{ $row->idade }}</td>
                                         <td>{{ $row->whatsapp }}</td>
+                                        <td>{{ $row->tamanho_camiseta ?: '—' }}</td>
                                         <td>{{ $row->igrejaRel?->nomeNoFormulario() ?? $row->igreja }}</td>
                                         <td>{{ $row->igrejaRel?->regional?->nome ?? '—' }}</td>
                                         <td>{{ $row->lider_jovens ? 'Sim' : 'Não' }}</td>
@@ -509,7 +511,7 @@
                     var $table = $('#datatable-tabletools');
                     /* Normaliza células com HTML para exportação (print/excel/pdf). */
                     var exportOpts = {
-                        columns: [0, 1, 2, 3, 4, 6],
+                        columns: [0, 1, 2, 3, 4, 5, 7],
                         format: {
                             body: function(data, row, col, node) {
                                 if (typeof data === 'string') {
@@ -526,7 +528,7 @@
                         ordering: true,
                         columnDefs: [{
                             orderable: false,
-                            targets: [7]
+                            targets: [8]
                         }],
                         language: {
                             search: 'Buscar:',
