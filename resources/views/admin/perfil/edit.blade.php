@@ -13,7 +13,8 @@
     @php($porto = asset('porto-admin'))
     @php($fotoPadrao = $porto . '/img/!logged-user.jpg')
     @php($caminhoFoto = $membro->foto)
-    @php($fotoPerfil = $caminhoFoto && \Illuminate\Support\Facades\Storage::disk('public')->exists($caminhoFoto) ? asset('storage/' . $caminhoFoto) : $fotoPadrao)
+    @php($fotoPublica = $caminhoFoto ? public_path('storage/' . $caminhoFoto) : null)
+    @php($fotoPerfil = $fotoPublica && file_exists($fotoPublica) ? asset('storage/' . $caminhoFoto) : $fotoPadrao)
 
     <div class="row">
         <div class="col-lg-8">

@@ -136,6 +136,8 @@ class DashboardController extends Controller
             ->select('status', DB::raw('COUNT(*) as total'))
             ->groupBy('status')
             ->pluck('total', 'status');
+        $totalConfirmadas = (int) ($inscricoesPorStatus[PreInscricao::STATUS_CONFIRMADA] ?? 0);
+        $valorArrecadadoTotal = round($totalConfirmadas * $valorInscricao, 2);
         $statusOptions = PreInscricao::statusOptions();
         $statusResumo = collect($statusOptions)->map(function (string $label, string $status) use ($inscricoesPorStatus) {
             return [
@@ -221,6 +223,8 @@ class DashboardController extends Controller
             'regionaisCards' => $regionaisCards,
             'metaInscricoes' => $metaInscricoes,
             'valorInscricao' => $valorInscricao,
+            'totalConfirmadas' => $totalConfirmadas,
+            'valorArrecadadoTotal' => $valorArrecadadoTotal,
             'percentualMeta' => $percentualMeta,
             'metasRegionais' => $metasRegionais,
             'totalIgrejasMeta' => $totalIgrejas,

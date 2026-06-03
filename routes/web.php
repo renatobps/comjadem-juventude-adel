@@ -61,8 +61,10 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
 
             Route::get('configuracoes', [ConfiguracaoController::class, 'index'])->name('configuracoes.index');
             Route::post('configuracoes/acessos', [ConfiguracaoController::class, 'atribuirAcesso'])->name('configuracoes.acessos.store');
+            Route::post('configuracoes/acessos/remover', [ConfiguracaoController::class, 'removerAcesso'])->name('configuracoes.acessos.remove');
             Route::post('configuracoes/metas', [ConfiguracaoController::class, 'salvarMetas'])->name('configuracoes.metas.store');
             Route::post('configuracoes/administradores', [ConfiguracaoController::class, 'atribuirAdministrador'])->name('configuracoes.admins.store');
+            Route::post('configuracoes/administradores/remover', [ConfiguracaoController::class, 'revogarAdministrador'])->name('configuracoes.admins.remove');
             Route::resource('regionais', RegionalController::class)
                 ->except(['show'])
                 ->parameters(['regionais' => 'regional']);

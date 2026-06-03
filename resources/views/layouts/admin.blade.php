@@ -172,7 +172,8 @@
                         @php($cargoUsuario = $membroUsuario?->cargo?->nome)
                         @php($fotoPadraoUsuario = $porto . '/img/!logged-user.jpg')
                         @php($caminhoFotoUsuario = $membroUsuario?->foto)
-                        @php($fotoUsuario = $caminhoFotoUsuario && \Illuminate\Support\Facades\Storage::disk('public')->exists($caminhoFotoUsuario) ? asset('storage/' . $caminhoFotoUsuario) : $fotoPadraoUsuario)
+                        @php($fotoPublicaUsuario = $caminhoFotoUsuario ? public_path('storage/' . $caminhoFotoUsuario) : null)
+                        @php($fotoUsuario = $fotoPublicaUsuario && file_exists($fotoPublicaUsuario) ? asset('storage/' . $caminhoFotoUsuario) : $fotoPadraoUsuario)
                         <a href="#" data-bs-toggle="dropdown">
                             <figure class="profile-picture">
                                 <img src="{{ $fotoUsuario }}" alt="" class="rounded-circle" data-lock-picture="{{ $fotoUsuario }}" onerror="this.onerror=null;this.src='{{ $fotoPadraoUsuario }}';" />

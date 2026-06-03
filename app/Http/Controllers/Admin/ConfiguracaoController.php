@@ -142,4 +142,38 @@ class ConfiguracaoController extends Controller
             ->route('admin.configuracoes.index')
             ->with('success', 'Usuário promovido a administrador com acesso total.');
     }
+
+    public function removerAcesso(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'membro_id' => ['required', 'integer', 'exists:membros,id'],
+        ]);
+
+        MembroAcessoRegional::query()
+            ->where('membro_id', $validated['membro_id'])
+            ->delete();
+
+        return redirect()
+            ->route('admin.configuracoes.index')
+            ->with('success', 'Acessos regionais removidos com sucesso.');
+    }
+
+    public function revogarAdministrador(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        $user = User::query()->findOrFail($validated['user_id']);
+
+        if ($request->user() && $user->id === $request->user()->id) {
+            return back()->with('error', 'Não é possível revogar seu próprio acesso de administrador.');
+        }
+
+        $user->update(['is_admin' => false]);
+
+        return redirect()
+            ->route('admin.configuracoes.index')
+            ->with('success', 'Acesso de administrador removido com sucesso.');
+    }
 }

@@ -238,6 +238,10 @@
         .inscricoes-dados-item h5 {
             margin-bottom: 0.45rem;
         }
+        .inscricoes-dados-item--geral {
+            border-color: #d8e8df;
+            background: #fbfefc;
+        }
         .inscricoes-metricas {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -447,47 +451,82 @@
                 </header>
                 <div class="card-body">
                     @if ($regionaisCards->isEmpty())
-                        <p class="text-muted mb-0">Sem regionais para exibir.</p>
-                    @else
-                        <div class="inscricoes-dados-lista">
-                            @foreach ($regionaisCards as $card)
-                                <article class="inscricoes-dados-item">
-                                    <h5 class="mb-1">{{ $card['regional']->nome }}</h5>
-                                    <div class="inscricoes-metricas">
-                                        <div class="inscricoes-metrica inscricoes-metrica--total">
-                                            <div class="inscricoes-metrica__topo">
-                                                <i class="fas fa-users inscricoes-metrica__icone" aria-hidden="true"></i>
-                                                <span class="inscricoes-metrica__label">Total</span>
-                                            </div>
-                                            <span class="inscricoes-metrica__valor">{{ $card['total'] }}</span>
-                                        </div>
-                                        <div class="inscricoes-metrica inscricoes-metrica--pagas">
-                                            <div class="inscricoes-metrica__topo">
-                                                <i class="fas fa-check-circle inscricoes-metrica__icone" aria-hidden="true"></i>
-                                                <span class="inscricoes-metrica__label">Pagas</span>
-                                            </div>
-                                            <span class="inscricoes-metrica__valor">{{ $card['confirmadas'] }}</span>
-                                        </div>
-                                        <div class="inscricoes-metrica inscricoes-metrica--valor">
-                                            <div class="inscricoes-metrica__topo">
-                                                <i class="fas fa-money-bill-wave inscricoes-metrica__icone" aria-hidden="true"></i>
-                                                <span class="inscricoes-metrica__label">Valor</span>
-                                            </div>
-                                            <span class="inscricoes-metrica__valor">R$ {{ number_format($card['valor_arrecadado'], 2, ',', '.') }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="inscricoes-pagamento-progresso">
-                                        <div class="inscricoes-pagamento-progresso__linha">
-                                            <div class="inscricoes-pagamento-progresso__barra" style="width: {{ $card['percentual_pagamentos'] }}%;"></div>
-                                        </div>
-                                        <div class="inscricoes-pagamento-progresso__texto">
-                                            Percentual de pagamentos: <strong>{{ $card['percentual_pagamentos'] }}%</strong>
-                                        </div>
-                                    </div>
-                                </article>
-                            @endforeach
-                        </div>
+                        <p class="text-muted mb-2">Sem regionais para exibir. Mostrando apenas total geral.</p>
                     @endif
+                    <div class="inscricoes-dados-lista">
+                        @foreach ($regionaisCards as $card)
+                            <article class="inscricoes-dados-item">
+                                <h5 class="mb-1">{{ $card['regional']->nome }}</h5>
+                                <div class="inscricoes-metricas">
+                                    <div class="inscricoes-metrica inscricoes-metrica--total">
+                                        <div class="inscricoes-metrica__topo">
+                                            <i class="fas fa-users inscricoes-metrica__icone" aria-hidden="true"></i>
+                                            <span class="inscricoes-metrica__label">Total</span>
+                                        </div>
+                                        <span class="inscricoes-metrica__valor">{{ $card['total'] }}</span>
+                                    </div>
+                                    <div class="inscricoes-metrica inscricoes-metrica--pagas">
+                                        <div class="inscricoes-metrica__topo">
+                                            <i class="fas fa-check-circle inscricoes-metrica__icone" aria-hidden="true"></i>
+                                            <span class="inscricoes-metrica__label">Pagas</span>
+                                        </div>
+                                        <span class="inscricoes-metrica__valor">{{ $card['confirmadas'] }}</span>
+                                    </div>
+                                    <div class="inscricoes-metrica inscricoes-metrica--valor">
+                                        <div class="inscricoes-metrica__topo">
+                                            <i class="fas fa-money-bill-wave inscricoes-metrica__icone" aria-hidden="true"></i>
+                                            <span class="inscricoes-metrica__label">Valor</span>
+                                        </div>
+                                        <span class="inscricoes-metrica__valor">R$ {{ number_format($card['valor_arrecadado'], 2, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                                <div class="inscricoes-pagamento-progresso">
+                                    <div class="inscricoes-pagamento-progresso__linha">
+                                        <div class="inscricoes-pagamento-progresso__barra" style="width: {{ $card['percentual_pagamentos'] }}%;"></div>
+                                    </div>
+                                    <div class="inscricoes-pagamento-progresso__texto">
+                                        Percentual de pagamentos: <strong>{{ $card['percentual_pagamentos'] }}%</strong>
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+
+                        <article class="inscricoes-dados-item inscricoes-dados-item--geral">
+                            <h5 class="mb-1">Total geral das pré-inscrições</h5>
+                            <div class="inscricoes-metricas">
+                                <div class="inscricoes-metrica inscricoes-metrica--total">
+                                    <div class="inscricoes-metrica__topo">
+                                        <i class="fas fa-users inscricoes-metrica__icone" aria-hidden="true"></i>
+                                        <span class="inscricoes-metrica__label">Total</span>
+                                    </div>
+                                    <span class="inscricoes-metrica__valor">{{ $total }}</span>
+                                </div>
+                                <div class="inscricoes-metrica inscricoes-metrica--pagas">
+                                    <div class="inscricoes-metrica__topo">
+                                        <i class="fas fa-check-circle inscricoes-metrica__icone" aria-hidden="true"></i>
+                                        <span class="inscricoes-metrica__label">Pagas</span>
+                                    </div>
+                                    <span class="inscricoes-metrica__valor">{{ $totalConfirmadas }}</span>
+                                </div>
+                                <div class="inscricoes-metrica inscricoes-metrica--valor">
+                                    <div class="inscricoes-metrica__topo">
+                                        <i class="fas fa-money-bill-wave inscricoes-metrica__icone" aria-hidden="true"></i>
+                                        <span class="inscricoes-metrica__label">Valor</span>
+                                    </div>
+                                    <span class="inscricoes-metrica__valor">R$ {{ number_format($valorArrecadadoTotal, 2, ',', '.') }}</span>
+                                </div>
+                            </div>
+                            @php($percentualPagamentoGeral = $total > 0 ? (int) round(($totalConfirmadas / $total) * 100) : 0)
+                            <div class="inscricoes-pagamento-progresso">
+                                <div class="inscricoes-pagamento-progresso__linha">
+                                    <div class="inscricoes-pagamento-progresso__barra" style="width: {{ $percentualPagamentoGeral }}%;"></div>
+                                </div>
+                                <div class="inscricoes-pagamento-progresso__texto">
+                                    Percentual de pagamentos: <strong>{{ $percentualPagamentoGeral }}%</strong>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
 
                     <hr>
                     <h6 class="mb-2">Inscrições por status</h6>

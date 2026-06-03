@@ -114,11 +114,36 @@
                     @if ($admins->isEmpty())
                         <p class="text-muted mb-0">Nenhum administrador cadastrado.</p>
                     @else
-                        <ul class="mb-0">
-                            @foreach ($admins as $admin)
-                                <li>{{ $admin->name }} ({{ $admin->email }})</li>
-                            @endforeach
-                        </ul>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>E-mail</th>
+                                        <th class="text-end" style="width: 9rem;">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($admins as $admin)
+                                        <tr>
+                                            <td>{{ $admin->name }}</td>
+                                            <td>{{ $admin->email }}</td>
+                                            <td class="text-end">
+                                                @if (auth()->id() === $admin->id)
+                                                    <span class="text-muted small">Conta atual</span>
+                                                @else
+                                                    <form method="post" action="{{ route('admin.configuracoes.admins.remove') }}" class="d-inline" onsubmit="return confirm('Remover acesso de administrador deste usuário?');">
+                                                        @csrf
+                                                        <input type="hidden" name="user_id" value="{{ $admin->id }}">
+                                                        <button type="submit" class="btn btn-sm btn-danger">Remover</button>
+                                                    </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     @endif
                 </div>
             </section>
@@ -191,6 +216,7 @@
                                     <th>E-mail</th>
                                     <th>Cargo</th>
                                     <th>Regional de acesso</th>
+                                    <th class="text-end" style="width: 9rem;">Ação</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -200,10 +226,17 @@
                                         <td>{{ $membro->email }}</td>
                                         <td>{{ $membro->cargo?->nome }}</td>
                                         <td>{{ $membro->acessosRegionais->pluck('regional.nome')->filter()->implode(', ') }}</td>
+                                        <td class="text-end">
+                                            <form method="post" action="{{ route('admin.configuracoes.acessos.remove') }}" class="d-inline" onsubmit="return confirm('Remover todos os acessos regionais deste membro?');">
+                                                @csrf
+                                                <input type="hidden" name="membro_id" value="{{ $membro->id }}">
+                                                <button type="submit" class="btn btn-sm btn-danger">Remover</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">Nenhum acesso atribuído.</td>
+                                        <td colspan="5" class="text-center text-muted">Nenhum acesso atribuído.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

@@ -46,7 +46,8 @@
                         <div class="form-group mb-3">
                             <label for="foto">Foto do membro</label>
                             <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
-                            @if ($membro->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($membro->foto))
+                            @php($fotoPublicaMembro = $membro->foto ? public_path('storage/' . $membro->foto) : null)
+                            @if ($fotoPublicaMembro && file_exists($fotoPublicaMembro))
                                 <div class="mt-2">
                                     <img src="{{ asset('storage/' . $membro->foto) }}" alt="Foto de {{ $membro->nome }}" style="max-width: 120px; border-radius: 6px;">
                                 </div>
