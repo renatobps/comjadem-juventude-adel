@@ -48,14 +48,13 @@ class ConfiguracaoController extends Controller
             ])->withInput();
         }
 
-        User::query()->firstOrCreate(
-            ['email' => $membro->email],
-            [
-                'name' => $membro->nome,
-                'password' => $membro->senha,
-                'is_admin' => false,
-            ]
-        );
+        $user = User::query()->firstOrNew(['email' => $membro->email]);
+        if (! $user->exists) {
+            $user->is_admin = false;
+        }
+        $user->name = $membro->nome;
+        $user->password = $membro->senha;
+        $user->save();
 
         MembroAcessoRegional::query()->where('membro_id', $membro->id)->delete();
 
